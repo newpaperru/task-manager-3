@@ -8,12 +8,12 @@ export type Task = {
     dateCreate: string;
 };
 
-export type FormData = Omit<Task, 'id' | 'dateCreate'>;
+export type FormData = Omit<Task, "id" | "dateCreate">;
 
 export type FormFieldConfig = {
-  label: string;
-  name: keyof FormData;
-  options: string[];
+    label: string;
+    name: keyof FormData;
+    options: string[];
 };
 
 export type ModalWindowProps = {
@@ -27,4 +27,3 @@ export type TableProps = {
     onEdit: (id: string) => void;
     onDelete: (id: string) => void;
 };
-

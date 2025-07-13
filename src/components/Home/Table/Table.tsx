@@ -19,7 +19,9 @@ export const Table = ({ tasks = [], onEdit, onDelete }: TableProps) => {
                     <div className={styles.cell}>
                         <div className={styles.text_wrap}>
                             <span className={styles.title}>{task.title}</span>
-                            <p className={styles.desc} title={task.description}>{task.description}</p>
+                            <p className={styles.desc} title={task.description}>
+                                {task.description}
+                            </p>
                         </div>
                         <Stack
                             direction="row"

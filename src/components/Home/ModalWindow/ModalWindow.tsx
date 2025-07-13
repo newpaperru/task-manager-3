@@ -14,15 +14,19 @@ import {
     Modal,
     Button,
     useMediaQuery,
-    useTheme
+    useTheme,
 } from "@mui/material";
 import { v4 as uuidv4 } from "uuid";
 import type { FormData, ModalWindowProps } from "../../Types/types";
 import { formFields, steps } from "../../Constants/constants";
 
-export const ModalWindow = ({ open, onClose, onTaskAdded }: ModalWindowProps) => {
+export const ModalWindow = ({
+    open,
+    onClose,
+    onTaskAdded,
+}: ModalWindowProps) => {
     const theme = useTheme();
-    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+    const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
     const [activeStep, setActiveStep] = useState(0);
     const [formData, setFormData] = useState<FormData>({
         title: "",
@@ -33,14 +37,14 @@ export const ModalWindow = ({ open, onClose, onTaskAdded }: ModalWindowProps) =>
     });
 
     const modalStyle = {
-        position: 'absolute',
-        top: '50%',
-        left: '50%',
-        transform: 'translate(-50%, -50%)',
-        width: isMobile ? '90%' : 600,
-        maxHeight: isMobile ? '90vh' : 'auto',
-        overflowY: 'auto',
-        bgcolor: 'background.paper',
+        position: "absolute",
+        top: "50%",
+        left: "50%",
+        transform: "translate(-50%, -50%)",
+        width: isMobile ? "90%" : 600,
+        maxHeight: isMobile ? "90vh" : "auto",
+        overflowY: "auto",
+        bgcolor: "background.paper",
         boxShadow: 24,
         p: isMobile ? 2 : 4,
         borderRadius: 2,
@@ -51,7 +55,9 @@ export const ModalWindow = ({ open, onClose, onTaskAdded }: ModalWindowProps) =>
     const handleNext = () => setActiveStep((prev) => prev + 1);
     const handleBack = () => setActiveStep((prev) => prev - 1);
 
-    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const handleInputChange = (
+        e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    ) => {
         const { name, value } = e.target;
         setFormData((prev) => ({ ...prev, [name]: value }));
     };
@@ -90,15 +96,15 @@ export const ModalWindow = ({ open, onClose, onTaskAdded }: ModalWindowProps) =>
     return (
         <Modal open={open} onClose={onClose}>
             <Box sx={modalStyle}>
-                <Stepper 
+                <Stepper
                     activeStep={activeStep}
                     orientation={isMobile ? "vertical" : "horizontal"}
-                    sx={{ 
-                        flexWrap: 'wrap',
+                    sx={{
+                        flexWrap: "wrap",
                         gap: 1,
-                        '& .MuiStepLabel-label': {
-                            fontSize: isMobile ? '0.8rem' : '0.875rem'
-                        }
+                        "& .MuiStepLabel-label": {
+                            fontSize: isMobile ? "0.8rem" : "0.875rem",
+                        },
                     }}
                 >
                     {steps.map((label, index) => (
@@ -120,7 +126,13 @@ export const ModalWindow = ({ open, onClose, onTaskAdded }: ModalWindowProps) =>
 
                 {activeStep === steps.length ? (
                     <>
-                        <Typography sx={{ mt: 2, mb: 1, fontSize: isMobile ? '1rem' : '1.125rem' }}>
+                        <Typography
+                            sx={{
+                                mt: 2,
+                                mb: 1,
+                                fontSize: isMobile ? "1rem" : "1.125rem",
+                            }}
+                        >
                             Задача успешно создана!
                         </Typography>
                         <Box sx={{ display: "flex", pt: 2 }}>
@@ -130,7 +142,15 @@ export const ModalWindow = ({ open, onClose, onTaskAdded }: ModalWindowProps) =>
                     </>
                 ) : (
                     <>
-                        <Box sx={{ mt: 2, mb: 3, '& .MuiFormControl-root': { mt: isMobile ? 1 : 2 } }}>
+                        <Box
+                            sx={{
+                                mt: 2,
+                                mb: 3,
+                                "& .MuiFormControl-root": {
+                                    mt: isMobile ? 1 : 2,
+                                },
+                            }}
+                        >
                             {activeStep === 0 && (
                                 <TextField
                                     fullWidth
@@ -163,53 +183,75 @@ export const ModalWindow = ({ open, onClose, onTaskAdded }: ModalWindowProps) =>
                             )}
 
                             {activeStep === 2 && (
-                                <Box sx={{
-                                    display: "flex",
-                                    flexDirection: "column",
-                                    gap: isMobile ? 2 : 3,
-                                }}>
-                                    {formFields.map(({ label, name, options }) => (
-                                        <FormControl fullWidth key={name}>
-                                            <InputLabel>{label}</InputLabel>
-                                            <Select
-                                                value={formData[name as keyof FormData]}
-                                                onChange={(e) => handleSelectChange(name as keyof FormData, e.target.value)}
-                                                label={label}
-                                                required
-                                            >
-                                                {options.map((option) => (
-                                                    <MenuItem
-                                                        key={option}
-                                                        value={option}
-                                                        sx={{
-                                                            py: isMobile ? 1 : 1.5,
-                                                            fontSize: isMobile ? '0.875rem' : '1rem'
-                                                        }}
-                                                    >
-                                                        {option}
-                                                    </MenuItem>
-                                                ))}
-                                            </Select>
-                                        </FormControl>
-                                    ))}
+                                <Box
+                                    sx={{
+                                        display: "flex",
+                                        flexDirection: "column",
+                                        gap: isMobile ? 2 : 3,
+                                    }}
+                                >
+                                    {formFields.map(
+                                        ({ label, name, options }) => (
+                                            <FormControl fullWidth key={name}>
+                                                <InputLabel>{label}</InputLabel>
+                                                <Select
+                                                    value={
+                                                        formData[
+                                                            name as keyof FormData
+                                                        ]
+                                                    }
+                                                    onChange={(e) =>
+                                                        handleSelectChange(
+                                                            name as keyof FormData,
+                                                            e.target.value
+                                                        )
+                                                    }
+                                                    label={label}
+                                                    required
+                                                >
+                                                    {options.map((option) => (
+                                                        <MenuItem
+                                                            key={option}
+                                                            value={option}
+                                                            sx={{
+                                                                py: isMobile
+                                                                    ? 1
+                                                                    : 1.5,
+                                                                fontSize:
+                                                                    isMobile
+                                                                        ? "0.875rem"
+                                                                        : "1rem",
+                                                            }}
+                                                        >
+                                                            {option}
+                                                        </MenuItem>
+                                                    ))}
+                                                </Select>
+                                            </FormControl>
+                                        )
+                                    )}
                                 </Box>
                             )}
                         </Box>
 
-                        <Box sx={{ 
-                            display: "flex", 
-                            pt: 2,
-                            flexDirection: isMobile ? "column-reverse" : "row",
-                            gap: isMobile ? 1 : 0
-                        }}>
+                        <Box
+                            sx={{
+                                display: "flex",
+                                pt: 2,
+                                flexDirection: isMobile
+                                    ? "column-reverse"
+                                    : "row",
+                                gap: isMobile ? 1 : 0,
+                            }}
+                        >
                             <Button
                                 color="inherit"
                                 disabled={activeStep === 0}
                                 onClick={handleBack}
-                                sx={{ 
+                                sx={{
                                     mr: isMobile ? 0 : 1,
                                     width: isMobile ? "100%" : "auto",
-                                    mb: isMobile ? 1 : 0
+                                    mb: isMobile ? 1 : 0,
                                 }}
                             >
                                 Назад
@@ -219,20 +261,26 @@ export const ModalWindow = ({ open, onClose, onTaskAdded }: ModalWindowProps) =>
                                 <Button
                                     color="inherit"
                                     onClick={handleNext}
-                                    sx={{ 
+                                    sx={{
                                         mr: isMobile ? 0 : 1,
                                         width: isMobile ? "100%" : "auto",
-                                        mb: isMobile ? 1 : 0
+                                        mb: isMobile ? 1 : 0,
                                     }}
                                 >
                                     Пропустить
                                 </Button>
                             )}
                             <Button
-                                onClick={activeStep === steps.length - 1 ? handleSubmit : handleNext}
+                                onClick={
+                                    activeStep === steps.length - 1
+                                        ? handleSubmit
+                                        : handleNext
+                                }
                                 sx={{ width: isMobile ? "100%" : "auto" }}
                             >
-                                {activeStep === steps.length - 1 ? "Добавить задачу" : "Далее"}
+                                {activeStep === steps.length - 1
+                                    ? "Добавить задачу"
+                                    : "Далее"}
                             </Button>
                         </Box>
                     </>

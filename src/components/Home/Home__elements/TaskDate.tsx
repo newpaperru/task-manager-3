@@ -1,7 +1,7 @@
 import { useEffect, useReducer } from "react";
 import { formatDistanceToNow } from "date-fns";
 import { ru } from "date-fns/locale";
-import styles from "../Table/Table.module.css"
+import styles from "../Table/Table.module.css";
 
 export const TaskDate = ({ dateCreate }: { dateCreate: string }) => {
     const [, forceUpdate] = useReducer((x) => x + 1, 0);
