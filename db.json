@@ -1,0 +1,13 @@
+{
+  "tasks": [
+    {
+      "id": "2nsd34f",
+      "title": "Сделать домашку Т1",
+      "description": "Домашка с стек-технологиями, task manager",
+      "category": "Feature",
+      "status": "Done",
+      "priority": "High",
+      "dateCreate": "2025-07-12T06:30:00Z"
+    }
+  ]
+}

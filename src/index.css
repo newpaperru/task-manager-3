@@ -1,0 +1,12 @@
+@import url("css/base-reset.css");
+@import url("css/fonts-styles.css");
+
+:root {
+  --base-color: #1d1d1d;
+  --base-color--opacity: #1d1d1db1;
+  --color-raven: #6c757d;
+  --color-red_800: #c62828;
+  --color-salsa_habanero: #e65100;
+  --color-sea_green: #2e7d32;
+}
+
