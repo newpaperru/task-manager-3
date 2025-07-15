@@ -1,5 +1,6 @@
-import { Details } from "../components/Details/Details";
+import { TaskForm } from "@features/tasks/Details/TaskForm";
+
 
 export const DetailsPage = () => {
-    return <Details />
+    return <TaskForm />
 };

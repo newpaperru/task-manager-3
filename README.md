@@ -17,7 +17,7 @@ Material UI + Material Icons <br>
 Доп. библиотеки: 
 - [date-fns](https://www.npmjs.com/package/date-fns) - Для работы с датами и их форматирование
 - [json-server](https://www.npmjs.com/package/json-server) - Простая база данных для хранения данных
-- [uuid](https://www.npmjs.com/package/json-server) - Для генерации уникальных ключей
+- [uuid](https://www.npmjs.com/package/uuid) - Для генерации уникальных ключей
 - [ESLint](https://www.npmjs.com/package/eslint) - Форматирование кода (Плагин взят из VSC Plugins)
 
 

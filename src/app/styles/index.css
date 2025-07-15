@@ -1,5 +1,5 @@
-@import url("css/base-reset.css");
-@import url("css/fonts-styles.css");
+@import url("./base-reset.css");
+@import url("./fonts-styles.css");
 
 :root {
   --base-color: #1d1d1d;

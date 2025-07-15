@@ -1,4 +1,4 @@
-import type { FormFieldConfig } from "../Types/types";
+import type { FormFieldConfig } from "@shared/types/types";
 
 export const steps = [
     "Напишите заголовок",

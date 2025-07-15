@@ -1,4 +1,4 @@
-import { Home } from "../components/Home/Home";
+import { Home } from "@features/tasks/Home/Home";
 
 export const HomePage = () => {
     return <Home />;

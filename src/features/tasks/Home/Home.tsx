@@ -1,11 +1,13 @@
 import { useState, useEffect } from "react";
-import { ButtonCreate } from "../MaterialUI/ButtonCreate";
-import styles from "./Home.module.css";
-import type { Task } from "../Types/types";
-import { Table } from "./Table/Table";
-import { ModalWindow } from "./ModalWindow/ModalWindow";
-
 import { useNavigate } from "react-router-dom";
+
+import type { Task } from "@shared/types/types";
+import { ButtonCreate } from "@shared/ui/MaterialUI/ButtonCreate";
+import { TaskList } from "@widgets/Table/TaskList";
+import { ModalWindow } from "@widgets/ModalWindow/ModalWindow";
+
+import styles from "./Home.module.css";
+
 
 export const Home = () => {
     const [tasks, setTasks] = useState<Task[]>([]);
@@ -55,7 +57,7 @@ export const Home = () => {
 
                 <div className={styles.tasks}>
                     {tasks.length > 0 ? (
-                        <Table
+                        <TaskList
                             tasks={tasks}
                             onEdit={handleEdit}
                             onDelete={handleDelete}

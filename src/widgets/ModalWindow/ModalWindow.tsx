@@ -17,8 +17,8 @@ import {
     useTheme,
 } from "@mui/material";
 import { v4 as uuidv4 } from "uuid";
-import type { FormData, ModalWindowProps } from "../../Types/types";
-import { formFields, steps } from "../../Constants/constants";
+import type { FormData, ModalWindowProps } from "@shared/types/types";
+import { formFields, steps } from "@shared/constants/constants";
 
 export const ModalWindow = ({
     open,

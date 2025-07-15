@@ -11,10 +11,10 @@ import {
     Button,
     Typography,
 } from "@mui/material";
-import type { FormData, Task } from "../Types/types";
-import { formFields } from "../Constants/constants";
+import type { FormData, Task } from "@shared/types/types";
+import { formFields } from "@shared/constants/constants";
 
-export const Details = () => {
+export const TaskForm = () => {
     const { id } = useParams<{ id: string }>();
     const navigate = useNavigate();
     const [task, setTask] = useState<FormData>({
