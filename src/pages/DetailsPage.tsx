@@ -1,6 +1,5 @@
-import { TaskForm } from "@features/tasks/Details/TaskForm";
-
+import { TaskForm } from "@/features/tasks/ui/Details/TaskForm";
 
 export const DetailsPage = () => {
-    return <TaskForm />
+    return <TaskForm />;
 };

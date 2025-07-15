@@ -1,4 +1,7 @@
 import { useState } from "react";
+import { useDispatch } from "react-redux";
+import type { AppDispatch } from "@/app/store";
+import { addTask } from "@/features/tasks/model/taskThunks";
 import {
     Box,
     Stepper,
@@ -16,16 +19,37 @@ import {
     useMediaQuery,
     useTheme,
 } from "@mui/material";
-import { v4 as uuidv4 } from "uuid";
 import type { FormData, ModalWindowProps } from "@shared/types/types";
 import { formFields, steps } from "@shared/constants/constants";
 
+/**
+ * Модальное окно для создания новой задачи с пошаговым процессом
+ *
+ * @component
+ * @param {ModalWindowProps} props - Пропсы компонента
+ * @param {boolean} props.open - Флаг открытия модального окна
+ * @param {() => void} props.onClose - Функция закрытия модального окна
+ * @param {() => void} props.onTaskAdded - Колбек после успешного добавления задачи
+ *
+ * @example
+ * <ModalWindow
+ *   open={isModalOpen}
+ *   onClose={handleCloseModal}
+ *   onTaskAdded={refreshTaskList}
+ * />
+ *
+ * @description
+ * Компонент предоставляет:
+ * - Пошаговый процесс создания задачи (stepper из MUI)
+ * - Адаптивный интерфейс для мобильных устройств
+ */
 export const ModalWindow = ({
     open,
     onClose,
     onTaskAdded,
 }: ModalWindowProps) => {
     const theme = useTheme();
+    const dispatch = useDispatch<AppDispatch>();
     const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
     const [activeStep, setActiveStep] = useState(0);
     const [formData, setFormData] = useState<FormData>({
@@ -50,11 +74,27 @@ export const ModalWindow = ({
         borderRadius: 2,
     };
 
+    /**
+     * Проверяет, является ли шаг опциональным
+     * @param {number} step - Номер шага
+     * @returns {boolean} true если шаг опциональный
+     */
     const isStepOptional = (step: number): boolean => step === 1;
 
+    /**
+     * Переход к следующему шагу
+     */
     const handleNext = () => setActiveStep((prev) => prev + 1);
+
+    /**
+     * Возврат к предыдущему шагу
+     */
     const handleBack = () => setActiveStep((prev) => prev - 1);
 
+    /**
+     * Обработчик изменения текстовых полей
+     * @param {React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>} e - Событие изменения
+     */
     const handleInputChange = (
         e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
     ) => {
@@ -62,22 +102,20 @@ export const ModalWindow = ({
         setFormData((prev) => ({ ...prev, [name]: value }));
     };
 
+    /**
+     * Обработчик изменения выпадающих списков
+     * @param {keyof FormData} name - Имя поля
+     * @param {string} value - Новое значение
+     */
     const handleSelectChange = (name: keyof FormData, value: string) => {
         setFormData((prev) => ({ ...prev, [name]: value }));
     };
 
+    /**
+     * Отправка формы и сохранение задачи
+     */
     const handleSubmit = () => {
-        const newTask = {
-            id: uuidv4(),
-            ...formData,
-            dateCreate: new Date().toISOString(),
-        };
-
-        fetch("http://localhost:3000/tasks", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(newTask),
-        })
+        dispatch(addTask(formData))
             .then(() => {
                 onTaskAdded();
                 onClose();
@@ -195,14 +233,10 @@ export const ModalWindow = ({
                                             <FormControl fullWidth key={name}>
                                                 <InputLabel>{label}</InputLabel>
                                                 <Select
-                                                    value={
-                                                        formData[
-                                                            name as keyof FormData
-                                                        ]
-                                                    }
+                                                    value={formData[name]}
                                                     onChange={(e) =>
                                                         handleSelectChange(
-                                                            name as keyof FormData,
+                                                            name,
                                                             e.target.value
                                                         )
                                                     }

@@ -9,6 +9,10 @@ const theme = createTheme({
     },
 });
 
+/**
+ * Пропсы для кнопки создания
+ * @property {() => void} onClick - Колбек при клике
+ */
 interface ButtonCreateProps {
     onClick: () => void;
 }

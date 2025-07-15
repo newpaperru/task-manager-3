@@ -1,44 +1,42 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import type { RootState, AppDispatch } from "@app/store";
+import { fetchTasks, removeTask } from "@/features/tasks/model/taskThunks";
 
-import type { Task } from "@shared/types/types";
 import { ButtonCreate } from "@shared/ui/MaterialUI/ButtonCreate";
 import { TaskList } from "@widgets/Table/TaskList";
 import { ModalWindow } from "@widgets/ModalWindow/ModalWindow";
 
 import styles from "./Home.module.css";
 
-
 export const Home = () => {
-    const [tasks, setTasks] = useState<Task[]>([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const navigate = useNavigate();
-
-    const fetchTasks = () => {
-        fetch("http://localhost:3000/tasks")
-            .then((res) => res.json())
-            .then(setTasks)
-            .catch(console.error);
-    };
+    const dispatch = useDispatch<AppDispatch>();
+    const { tasks, loading, error } = useSelector(
+        (state: RootState) => state.tasks
+    );
 
     useEffect(() => {
-        fetchTasks();
-    }, []);
+        dispatch(fetchTasks());
+    }, [dispatch]);
 
     const handleDelete = (id: string) => {
-        fetch(`http://localhost:3000/tasks/${id}`, { method: "DELETE" })
-            .then(() => setTasks(tasks.filter((task) => task.id !== id)))
-            .catch(console.error);
+        dispatch(removeTask(id));
     };
 
     const handleTaskAdded = () => {
-        fetchTasks();
         setIsModalOpen(false);
+        dispatch(fetchTasks());
     };
 
     const handleEdit = (id: string) => {
         navigate(`/task/${id}`);
     };
+
+    if (loading) return <div>Loading...</div>;
+    if (error) return <div>Error: {error}</div>;
 
     return (
         <div className={styles.home}>

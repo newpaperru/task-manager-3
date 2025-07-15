@@ -1,5 +1,8 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import type { RootState, AppDispatch } from "@app/store";
+import { editTask, fetchTasks } from "@/features/tasks/model/taskThunks";
 import {
     Box,
     TextField,
@@ -13,50 +16,63 @@ import {
 } from "@mui/material";
 import type { FormData, Task } from "@shared/types/types";
 import { formFields } from "@shared/constants/constants";
+import { API_URL } from "@/features/tasks/api/API_URL";
 
 export const TaskForm = () => {
     const { id } = useParams<{ id: string }>();
     const navigate = useNavigate();
-    const [task, setTask] = useState<FormData>({
-        title: "",
-        description: "",
-        category: "",
-        status: "",
-        priority: "",
+    const dispatch = useDispatch<AppDispatch>();
+
+    const taskFromStore = useSelector((state: RootState) =>
+        state.tasks.tasks.find((task) => task.id === id)
+    );
+
+    const [formData, setFormData] = useState<FormData>({
+        title: taskFromStore?.title || "",
+        description: taskFromStore?.description || "",
+        category: taskFromStore?.category || "",
+        status: taskFromStore?.status || "",
+        priority: taskFromStore?.priority || "",
     });
 
     useEffect(() => {
-        if (id) {
-            fetch(`http://localhost:3000/tasks/${id}`)
+        if (id && !taskFromStore) {
+            fetch(`${API_URL}/${id}`)
                 .then((res) => res.json())
-                .then(({ ...formData }: Task) => {
-                    setTask(formData);
+                .then((task: Task) => {
+                    setFormData({
+                        title: task.title,
+                        description: task.description,
+                        category: task.category,
+                        status: task.status,
+                        priority: task.priority,
+                    });
                 })
                 .catch(console.error);
         }
-    }, [id]);
+    }, [id, taskFromStore]);
 
     const handleInputChange = (
         e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
     ) => {
         const { name, value } = e.target;
-        setTask((prev) => ({ ...prev, [name]: value }));
+        setFormData((prev: FormData) => ({ ...prev, [name]: value }));
     };
 
     const handleSelectChange = (name: keyof FormData, value: string) => {
-        setTask((prev) => ({ ...prev, [name]: value }));
+        setFormData((prev: FormData) => ({ ...prev, [name]: value }));
     };
 
-    const handleSave = () => {
+    const handleSave = async () => {
         if (!id) return;
 
-        fetch(`http://localhost:3000/tasks/${id}`, {
-            method: "PUT",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(task),
-        })
-            .then(() => navigate("/"))
-            .catch(console.error);
+        try {
+            await dispatch(editTask({ id, data: formData }));
+            await dispatch(fetchTasks());
+            navigate("/");
+        } catch (error) {
+            console.error("Failed to save task:", error);
+        }
     };
 
     return (
@@ -69,7 +85,7 @@ export const TaskForm = () => {
                 fullWidth
                 label="Заголовок задачи"
                 name="title"
-                value={task.title}
+                value={formData.title}
                 onChange={handleInputChange}
                 sx={{ mb: 2 }}
             />
@@ -87,7 +103,7 @@ export const TaskForm = () => {
                 }}
                 placeholder="Описание задачи"
                 name="description"
-                value={task.description}
+                value={formData.description}
                 onChange={handleInputChange}
             />
 
@@ -98,7 +114,7 @@ export const TaskForm = () => {
                     <FormControl fullWidth key={name}>
                         <InputLabel>{label}</InputLabel>
                         <Select
-                            value={task[name]}
+                            value={formData[name]}
                             onChange={(e) =>
                                 handleSelectChange(name, e.target.value)
                             }
