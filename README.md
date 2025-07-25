@@ -15,10 +15,8 @@
 Для работы в StackBlitz
 1. Для начала сделайте split или создайте новый терминал (лучше split'ом для удобства)
 2. Откройте созданный терминал
-3. Запустите json-server командой: npx json-server db.json
-4. Скорее всего у Вас переключится на сайт json-server. Для того, чтобы вернуться обратно, достаточно многократно нажать
-на ссылку в терминале, где у вас запуск vite, в значении ключа Local.
-5. Готово! Проект запущен!!
+3. Запустите сервер командой: npx tsx server.ts
+4. Готово! Проект запущен!!
 
 Для работы локального использования
 1. Установите все необходимые зависимости.
@@ -32,6 +30,7 @@
 >Сборщик: Vite <br>
 React TypeScript + SWC <br>
 Redux Toolkit + react-redux <br>
+Node.js + express <br>
 React Router V6 <br>
 Material UI + Material Icons <br>
 Инструменты: CSS Modules <br>
@@ -43,6 +42,7 @@ Aliases Path
 - [uuid](https://www.npmjs.com/package/uuid) - Для генерации уникальных ключей
 - [react-truncate-markup](https://www.npmjs.com/package/react-truncate-markup) - библиотека для обрезания текста и преобразования его в троеточие
 - [ESLint](https://www.npmjs.com/package/eslint) - Форматирование кода (Плагин взят из VSC Plugins)
+- [tsx](https://www.npmjs.com/package/tsx) - Нужен для запуска TypeScript в Node.js
 
 <h2>Краткое описание применённой архитектуры</h2>
 Проект построен по Feature-Sliced Design (FSD) с разделением на:
