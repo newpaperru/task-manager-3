@@ -106,7 +106,7 @@ export const editTask = createAsyncThunk(
             dispatch(updateTask({ id, data }));
 
             const response = await fetch(`${API_URL}/${id}`, {
-                method: "PUT",
+                method: "PATCH",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
                     ...existingTask,
