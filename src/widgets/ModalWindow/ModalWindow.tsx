@@ -22,27 +22,6 @@ import {
 import type { FormData, ModalWindowProps } from "@shared/types/types";
 import { formFields, steps } from "@shared/constants/constants";
 
-/**
- * Модальное окно для создания новой задачи с пошаговым процессом
- *
- * @component
- * @param {ModalWindowProps} props - Пропсы компонента
- * @param {boolean} props.open - Флаг открытия модального окна
- * @param {() => void} props.onClose - Функция закрытия модального окна
- * @param {() => void} props.onTaskAdded - Колбек после успешного добавления задачи
- *
- * @example
- * <ModalWindow
- *   open={isModalOpen}
- *   onClose={handleCloseModal}
- *   onTaskAdded={refreshTaskList}
- * />
- *
- * @description
- * Компонент предоставляет:
- * - Пошаговый процесс создания задачи (stepper из MUI)
- * - Адаптивный интерфейс для мобильных устройств
- */
 export const ModalWindow = ({
     open,
     onClose,
@@ -59,6 +38,7 @@ export const ModalWindow = ({
         status: "",
         priority: "",
     });
+    const [fieldErrors, setFieldErrors] = useState<Partial<Record<keyof FormData, boolean>>>({});
 
     const modalStyle = {
         position: "absolute",
@@ -74,61 +54,70 @@ export const ModalWindow = ({
         borderRadius: 2,
     };
 
-    /**
-     * Проверяет, является ли шаг опциональным
-     * @param {number} step - Номер шага
-     * @returns {boolean} true если шаг опциональный
-     */
     const isStepOptional = (step: number): boolean => step === 1;
 
-    /**
-     * Переход к следующему шагу
-     */
-    const handleNext = () => setActiveStep((prev) => prev + 1);
+    const validateCurrentStep = (): boolean => {
+        const newErrors: Partial<Record<keyof FormData, boolean>> = {};
 
-    /**
-     * Возврат к предыдущему шагу
-     */
+        if (activeStep === 0 && !formData.title.trim()) {
+            newErrors.title = true;
+        }
+
+        if (activeStep === 2) {
+            if (!formData.category) newErrors.category = true;
+            if (!formData.status) newErrors.status = true;
+            if (!formData.priority) newErrors.priority = true;
+        }
+
+        setFieldErrors(newErrors);
+        return Object.keys(newErrors).length === 0;
+    };
+
+    const handleNext = () => {
+        if (validateCurrentStep()) {
+            setActiveStep((prev) => prev + 1);
+        }
+    };
+
     const handleBack = () => setActiveStep((prev) => prev - 1);
 
-    /**
-     * Обработчик изменения текстовых полей
-     * @param {React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>} e - Событие изменения
-     */
     const handleInputChange = (
         e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
     ) => {
         const { name, value } = e.target;
         setFormData((prev) => ({ ...prev, [name]: value }));
+        // Сбрасываем ошибку при изменении поля
+        if (fieldErrors[name as keyof FormData]) {
+            setFieldErrors(prev => ({ ...prev, [name]: false }));
+        }
     };
 
-    /**
-     * Обработчик изменения выпадающих списков
-     * @param {keyof FormData} name - Имя поля
-     * @param {string} value - Новое значение
-     */
     const handleSelectChange = (name: keyof FormData, value: string) => {
         setFormData((prev) => ({ ...prev, [name]: value }));
+        // Сбрасываем ошибку при изменении поля
+        if (fieldErrors[name]) {
+            setFieldErrors(prev => ({ ...prev, [name]: false }));
+        }
     };
 
-    /**
-     * Отправка формы и сохранение задачи
-     */
     const handleSubmit = () => {
-        dispatch(addTask(formData))
-            .then(() => {
-                onTaskAdded();
-                onClose();
-                setFormData({
-                    title: "",
-                    description: "",
-                    category: "",
-                    status: "",
-                    priority: "",
-                });
-                setActiveStep(0);
-            })
-            .catch(console.error);
+        if (validateCurrentStep()) {
+            dispatch(addTask(formData))
+                .then(() => {
+                    onTaskAdded();
+                    onClose();
+                    setFormData({
+                        title: "",
+                        description: "",
+                        category: "",
+                        status: "",
+                        priority: "",
+                    });
+                    setActiveStep(0);
+                    setFieldErrors({});
+                })
+                .catch(console.error);
+        }
     };
 
     return (
@@ -197,6 +186,14 @@ export const ModalWindow = ({
                                     name="title"
                                     value={formData.title}
                                     onChange={handleInputChange}
+                                    error={fieldErrors.title}
+                                    sx={{
+                                        '& .MuiOutlinedInput-root': {
+                                            '& fieldset': {
+                                                borderColor: fieldErrors.title ? 'error.main' : undefined,
+                                            },
+                                        },
+                                    }}
                                     required
                                 />
                             )}
@@ -209,7 +206,9 @@ export const ModalWindow = ({
                                         width: "100%",
                                         padding: "8px",
                                         borderRadius: "4px",
-                                        border: "1px solid rgba(0, 0, 0, 0.23)",
+                                        border: fieldErrors.description 
+                                            ? "1px solid #d32f2f" 
+                                            : "1px solid rgba(0, 0, 0, 0.23)",
                                         fontFamily: "inherit",
                                         fontSize: isMobile ? "14px" : "inherit",
                                     }}
@@ -230,7 +229,11 @@ export const ModalWindow = ({
                                 >
                                     {formFields.map(
                                         ({ label, name, options }) => (
-                                            <FormControl fullWidth key={name}>
+                                            <FormControl 
+                                                fullWidth 
+                                                key={name}
+                                                error={fieldErrors[name as keyof FormData]}
+                                            >
                                                 <InputLabel>{label}</InputLabel>
                                                 <Select
                                                     value={formData[name]}
@@ -241,6 +244,13 @@ export const ModalWindow = ({
                                                         )
                                                     }
                                                     label={label}
+                                                    sx={{
+                                                        '& .MuiOutlinedInput-notchedOutline': {
+                                                            borderColor: fieldErrors[name as keyof FormData] 
+                                                                ? 'error.main' 
+                                                                : undefined,
+                                                        },
+                                                    }}
                                                     required
                                                 >
                                                     {options.map((option) => (
