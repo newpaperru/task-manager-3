@@ -35,12 +35,11 @@
     position: relative;
 }
 
-.wrap {
-    display: flex;
-    align-items: flex-end;
-    justify-content: space-between;
+.content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
-
 
 .text_wrap {
     margin-bottom: 10px;
